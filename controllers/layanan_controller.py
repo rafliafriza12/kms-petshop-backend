@@ -37,3 +37,10 @@ def delete(id):
         return jsonify({"status": 403,"message": "FORBIDDEN"}), 403
     L.delete_layanan(id)
     return jsonify({"status": 201, "message": "Layanan berhasil dihapus"}), 200
+
+
+@bp.get("/<id_kucing>/rekomendasi")
+@token_required
+def get_rekomendasi_layanan(id_kucing):
+    rekomendasi = L.get_rekomendasi_layanan(id_kucing)
+    return jsonify({"status": 200, "data": rekomendasi}), 200
