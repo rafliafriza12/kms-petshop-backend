@@ -19,3 +19,5 @@ def update_kucing(id, data):
     return get_kucing(id)
 
 def delete_kucing(id): COL.find_one_and_delete({"_id": ObjectId(id)})
+
+def list_all_kucing(): return list(COL.find())

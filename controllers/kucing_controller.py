@@ -11,6 +11,13 @@ bp = Blueprint("kucing", __name__, url_prefix="/api/kucing")
 def list_my_cats():
     return jsonify({"status": 200, "data": K.list_kucing(request.user["userId"]), "message": "List kucing ditemukan"}), 200
 
+@bp.get("/all")
+@token_required
+def all_cats():
+    if (request.user.get("role") != "ADMIN"):
+        return jsonify({"status": 403,"message": "FORBIDDEN"}), 403
+    return jsonify({"status": 200, "data": K.list_all_kucing(), "message": "List kucing ditemukan"}), 200
+
 @bp.post("")
 @token_required
 def create():
