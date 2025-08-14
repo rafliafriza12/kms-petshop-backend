@@ -16,3 +16,5 @@ def create_or_put_knowledge(layanan_id, data):
     newKnowledge = KNOWLEDGE.insert_one(data)
     return KNOWLEDGE.find_one({"_id": newKnowledge.inserted_id})
 
+def get_knowledge_by_layanan_id(layananId):
+    return KNOWLEDGE.find_one({"layananId": ObjectId(layananId)})

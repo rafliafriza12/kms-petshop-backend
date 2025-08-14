@@ -1,17 +1,17 @@
 from flask import Blueprint, request, jsonify
-from models.knowledge import create_or_put_knowledge
+from models.knowledge import create_or_put_knowledge , get_knowledge_by_layanan_id
 from utils.jwt_middleware import token_required
 from models.admin_dashboard import get_dashboard
 from bson import ObjectId
 
 bp = Blueprint("knowledge", __name__, url_prefix="/api/knowledge")
 
-@bp.get("")
+@bp.get("/<layananId>")
 @token_required
-def get_knowledge_data():
+def get_knowledge_data(layananId):
     if (request.user.get("role") != "ADMIN"):
         return jsonify({"status": 403,"message": "FORBIDDEN"}), 403
-    data = get_dashboard()
+    data = get_knowledge_by_layanan_id(layananId)
     return jsonify({"status": 200, "data": data}), 200
 
 @bp.post("/<layanan_id>")
