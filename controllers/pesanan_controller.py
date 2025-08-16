@@ -76,3 +76,12 @@ def get_all_pesanan_data():
         return jsonify({"status": 403,"message": "FORBIDDEN"}), 403
     data = list_all_pesanan()
     return jsonify({"status": 200, "data": data, "message": "Berhasil mengambil semua pesanan"}), 200
+
+@bp.put("/statusPembayaran/<pesanan_id>")
+@token_required
+def update_status_pembayaran(pesanan_id):
+    if (request.user.get("role") != "ADMIN"):
+        return jsonify({"status": 403,"message": "FORBIDDEN"}), 403
+    data = request.json
+    updated_pesanan = update_pesanan_item(pesanan_id, {"statusPembayaran": data["statusPembayaran"]})
+    return jsonify({"status": 200, "data": updated_pesanan, "message": "Status pembayaran berhasil diupdate"}), 200
