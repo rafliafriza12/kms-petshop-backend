@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from models.knowledge import create_or_put_knowledge , get_knowledge_by_layanan_id
+from models.knowledge import create_or_put_knowledge , get_knowledge_by_layanan_id, delete_knowledge_by_layanan_id
 from utils.jwt_middleware import token_required
 from models.admin_dashboard import get_dashboard
 from bson import ObjectId
@@ -22,3 +22,11 @@ def create_knowledge_data(layanan_id):
     data = request.json
     result = create_or_put_knowledge(layanan_id, data)
     return jsonify({"status": 200, "data": result}), 200
+
+@bp.delete("/<layananId>")
+@token_required
+def delete_knowledge_data(layananId):
+    if (request.user.get("role") != "ADMIN"):
+        return jsonify({"status": 403,"message": "FORBIDDEN"}), 403
+    delete_knowledge_by_layanan_id(layananId)
+    return jsonify({"status": 200, "message": "Knowledge Berhasil dihapus"}), 200
