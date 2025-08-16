@@ -83,5 +83,14 @@ def update_status_pembayaran(pesanan_id):
     if (request.user.get("role") != "ADMIN"):
         return jsonify({"status": 403,"message": "FORBIDDEN"}), 403
     data = request.json
-    updated_pesanan = update_pesanan_item(pesanan_id, {"statusPembayaran": data["statusPembayaran"]})
-    return jsonify({"status": 200, "data": updated_pesanan, "message": "Status pembayaran berhasil diupdate"}), 200
+    pesanan_list = update_pesanan_item(pesanan_id, {"statusPembayaran": data["statusPembayaran"]})
+    pending_count = sum(1 for p in pesanan_list for item in p['items'] if item.get("statusPesanan") == "PENDING")
+    proses_count = sum(1 for p in pesanan_list for item in p['items'] if item.get("statusPesanan") == "PROSES")
+    selesai_count = sum(1 for p in pesanan_list for item in p['items'] if item.get("statusPesanan") == "SELESAI")
+    total_transaksi = sum(p.get("totalHarga", 0) for p in pesanan_list)
+    return jsonify({"status": 200, "data": pesanan_list, "message": "Status pembayaran berhasil diupdate", "summary": {
+            "pending": pending_count,
+            "proses": proses_count,
+            "selesai": selesai_count,
+            "total_transaksi": total_transaksi
+        }}), 200
