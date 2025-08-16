@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 from utils.jwt_middleware import token_required
 from models.keranjang import get_or_create_cart, list_items, clear_items
-from models.pesanan import create_pesanan, update_pesanan_item, get_pesanan, list_pesanan
+from models.pesanan import create_pesanan, update_pesanan_item, get_pesanan, list_pesanan, list_all_pesanan
 
 bp = Blueprint("pesanan", __name__, url_prefix="/api/pesanan")
 
@@ -69,3 +69,10 @@ def get_single_pesanan(pesanan_id):
         "data": pesanan
     }), 200
 
+@bp.get("/all")
+@token_required
+def get_all_pesanan_data():
+    if (request.user.get("role") != "ADMIN"):
+        return jsonify({"status": 403,"message": "FORBIDDEN"}), 403
+    data = list_all_pesanan()
+    return jsonify({"status": 200, "data": data, "message": "Berhasil mengambil semua pesanan"}), 200

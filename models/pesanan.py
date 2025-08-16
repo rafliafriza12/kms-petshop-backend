@@ -68,4 +68,16 @@ def list_pesanan(user_id):
         {"$sort": {"createdAt": -1}}
     ]))
 
-
+def list_all_pesanan():
+    return list(ORD.aggregate([
+        {"$lookup": {
+            "from": "pesananItem",
+            "localField": "_id",
+            "foreignField": "pesananId",
+            "as": "items"
+        }},
+        {"$addFields": {
+            "totalItems": {"$size": "$items"}
+        }},
+        {"$sort": {"createdAt": -1}}
+    ]))
